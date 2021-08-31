@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+    php:
+        container_name: php-container
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+            args:
+                TIMEZONE: "Africa/Cairo"
+        volumes:
+            - ./:/var/www/
+        networks:
+            - symfony
+    nginx:
+        container_name: nginx
+        build:
+            context: .
+            dockerfile: docker/nginx/Dockerfile
+        volumes:
+            - ./:/var/www/
+        ports:
+            - 8001:80
+        networks:
+            - symfony
+
+networks:
+    symfony:
