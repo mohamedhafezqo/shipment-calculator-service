@@ -1,0 +1,71 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    report_input_command: '%kernel.project_dir%/input.txt'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+
+    App\Command\ShipmentCalculatorCommand:
+        tags:
+            - { name: 'console.command', command: 'shipment-discount:calculate' }
+        arguments:
+            - '@App\Service\Reader\Contract\ReaderInterface'
+
+    App\Service\Contract\ShipmentCalculatorInterface:
+        class: App\Service\ShipmentCalculatorService
+        arguments:
+            - !tagged_iterator app.rule
+
+    App\Service\Rule\Contract\RuleInterface $monthlyDiscountPackageRule:
+      class: App\Service\Rule\MonthlyDiscountRule
+      tags:
+        - { name: 'app.rule', priority: 1 }
+
+    App\Service\Rule\Contract\RuleInterface $largePackageRule:
+      class: App\Service\Rule\LargeLPPackageRule
+      tags:
+        - { name: 'app.rule', priority: 2 }
+
+    App\Service\Rule\Contract\RuleInterface $smallPackageRule:
+        class: App\Service\Rule\SmallPackageRule
+        arguments:
+            - !tagged_iterator app.provider
+        tags:
+            - { name: 'app.rule', priority: 3 }
+
+    App\Service\Rule\Contract\RuleInterface $defaultPackageRule:
+        class: App\Service\Rule\DefaultPackageRule
+        tags:
+            - { name: 'app.rule', priority: 4 }
+
+    App\Service\ShipmentProvider\Contract\ProviderInterface $lpProvider:
+        class: App\Service\ShipmentProvider\LpProvider
+        tags: { name: 'app.provider', alias: 'LpProvider'}
+
+    App\Service\ShipmentProvider\Contract\ProviderInterface:
+        class: App\Service\ShipmentProvider\MrProvider
+        tags: { name: 'app.provider', alias: 'MrProvider'}
+
+    App\Service\Reader\Contract\ReaderInterface:
+        class: App\Service\Reader\FileReader
+        arguments:
+            - "%report_input_command%"
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

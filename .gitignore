@@ -1,0 +1,15 @@
+###> symfony/framework-bundle ###
+/.env.local.php
+/public/bundles/
+/var/
+./idea
+/vendor/
+/docker/mysql-data/
+/docker/elasticsearch-data/
+###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
