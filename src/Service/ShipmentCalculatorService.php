@@ -52,9 +52,8 @@ class ShipmentCalculatorService implements ShipmentCalculatorInterface
 
         while ($line = $reader->read()) {
             $transaction->parse($line);
-            $this->calculate($transaction);
 
-            yield $transaction;
+            yield $this->calculate($transaction);
         }
     }
 }

@@ -6,11 +6,11 @@ use App\DTO\Transaction;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * Class TransactoinTest
+ * Class TransactionTest
  *
  * @package App\Tests\Unit\DTO
  */
-class TransactoinTest extends WebTestCase
+class TransactionTest extends WebTestCase
 {
     public function testTransaction()
     {
@@ -20,6 +20,6 @@ class TransactoinTest extends WebTestCase
         $this->assertEquals($transaction->getProviderName(), 'MR');
         $this->assertEquals($transaction->getDiscount(), 0);
         $this->assertEquals($transaction->getShippingCost(), 0);
-        $this->assertEquals($transaction->getDate(), new \DateTime('2015-02-07'));// TODO:: rename it to created_at
+        $this->assertEquals($transaction->getDate(), new \DateTime('2015-02-07'));
     }
 }
