@@ -1,3 +1,6 @@
+### Task
+- https://gist.github.com/vintedEngineering/7a24d2bb2ef4189447c6b938604ab030
+
 ### Clarification
 - I relayed on abstraction, not concretion so the project is loosely coupled we can easily add new rule or even provider smoothly
     - Following `RuleInterface` or `ProviderInterface` and register the new provider in `ProviderFactory`.
